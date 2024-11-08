@@ -1,4 +1,6 @@
 using ErrorHandling.Api.Middleware;
+using ErrorHandling.Api.Util;
+using FluentValidation.AspNetCore;
 using Serilog;
 
 namespace ErrorHandling.Api
@@ -20,7 +22,11 @@ namespace ErrorHandling.Api
                 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day) // Cria um novo arquivo por dia
                 .CreateLogger();
 
-  
+            // Registra todos os validadores do FluentValidation automaticamente
+            builder.Services.AddControllers().AddFluentValidation(config =>
+            {
+                config.RegisterValidatorsFromAssemblyContaining<ProdutoDTOValidator>();
+            });
 
             var app = builder.Build();
 
